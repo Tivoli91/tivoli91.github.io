@@ -1,0 +1,541 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="What Is PowerShell"><meta name="keywords" content="搬运"><meta name="author" content="超速蜗牛,undefined"><meta name="copyright" content="超速蜗牛"><title>What Is PowerShell【超速蜗牛的博客】</title><link rel="stylesheet" href="/css/fan.css"><link rel="stylesheet" href="/css/thirdparty/jquery.mCustomScrollbar.min.css"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch.min.css"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4/dist/instantsearch-theme-algolia.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.4"></script><!-- link(rel="dns-prefetch" href="https://cdn.jsdelivr.net")--><!-- link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.css")--><!-- script(src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.1.1/dist/instantsearch.min.js" defer)--><!-- script(src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML")--><script src="/js/mathjax/mathjax.js"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+});
+</script><script>var isPassword = '' || false;
+if (isPassword) {
+    if (prompt('请输入文章密码') !== '') {
+        alert('密码错误！');
+        history.back();
+    }
+}</script><script>window.GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"AOHMI93W80","apiKey":"3f74c7e8113768c69c3eedfd6540618f","indexName":"hexo","hits":{"per_page":10},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+}</script></head><body><canvas id="universe"></canvas><!--#body--><div id="sidebar"><div class="toggle-sidebar-info button-hover"><span data-toggle="文章目录">站点概览</span></div><div class="sidebar-toc"><div class="sidebar-toc-title">目录</div><div class="sidebar-toc-progress"><span class="progress-notice">您已阅读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc-progress-bar"></div></div><div class="sidebar-toc-content" id="sidebar-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PowerShell"><span class="toc-number">1.</span> <span class="toc-text">PowerShell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-背景-Background"><span class="toc-number">1.1.</span> <span class="toc-text">1. 背景(Background)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-设计-Design"><span class="toc-number">1.2.</span> <span class="toc-text">2. 设计(Design)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Cmdlets"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 Cmdlets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-管道-Pipeline"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 管道(Pipeline)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-脚本-Scripting"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 脚本(Scripting)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-托管-Hosting"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 托管(Hosting)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-预期状态配置-Desired-State-Configuration"><span class="toc-number">1.3.</span> <span class="toc-text">3. 预期状态配置(Desired State Configuration )</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-版本-Versions"><span class="toc-number">1.4.</span> <span class="toc-text">4. 版本(Versions)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-PowerShell-1-0"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 PowerShell 1.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-PowerShell-2-0"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 PowerShell 2.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-PowerShell-3-0"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 PowerShell 3.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-PowerShell-4-0"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 PowerShell 4.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-PowerShell-5-0"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 PowerShell 5.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-PowerShell-Core-6-0"><span class="toc-number">1.4.6.</span> <span class="toc-text">4.6 PowerShell Core 6.0</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-命令类似的cmdlets比较-Comparison-of-cmdlets-with-similar-commands"><span class="toc-number">1.5.</span> <span class="toc-text">5. 命令类似的cmdlets比较(Comparison of cmdlets with similar commands)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-文件扩展名-File-extensions"><span class="toc-number">1.6.</span> <span class="toc-text">6. 文件扩展名(File extensions)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-应用支持-Application-support"><span class="toc-number">1.7.</span> <span class="toc-text">7. 应用支持(Application support)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Snap-ins-and-hostsedit"><span class="toc-number">1.7.1.</span> <span class="toc-text">Snap-ins and hostsedit</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-替代实现-Alternative-implementation"><span class="toc-number">1.8.</span> <span class="toc-text">8. 替代实现(Alternative implementation)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-扩展阅读-See-also"><span class="toc-number">1.9.</span> <span class="toc-text">9. 扩展阅读(See also)</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info-avatar"><img class="author-info-avatar-img" src="/avatar.png"></div><div class="author-info-name">超速蜗牛</div><div class="author-info-description">Learn PowerShell.</div><div class="links-buttons"><a class="links-button button-hover" href="https://gitee.com/chaoyuew" target="_blank">Gitee<i class="icon-dot bg-color10"></i></a><a class="links-button button-hover" href="mailto:348001390@qq.com" target="_blank">E-Mail<i class="icon-dot bg-color7"></i></a><a class="links-button button-hover" href="tencent://message/?uin=348001390&amp;Site=&amp;Menu=yes" target="_blank">QQ<i class="icon-dot bg-color4"></i></a></div><div class="author-info-articles"><a class="author-info-articles-archives article-meta" href="/archives"><span class="pull-top">日志</span><span class="pull-bottom">26</span></a><a class="author-info-articles-tags article-meta" href="/tags"><span class="pull-top">标签</span><span class="pull-bottom">34</span></a><a class="author-info-articles-categories article-meta" href="/categories"><span class="pull-top">分类</span><span class="pull-bottom">2</span></a></div></div></div><div id="main-container"><header><div id="menu-outer"><i class="menu-list-icon fas fa-bars"></i><nav id="menu-inner"><a class="menu-item" href="/">首页</a><a class="menu-item" href="/tags">标签</a><a class="menu-item" href="/categories">分类</a><a class="menu-item" href="/archives">归档</a><a class="menu-item" href="/about">关于</a></nav><div class="right-info"><a class="search social-icon"><i class="fas fa-search"></i><span> 搜索</span></a><a class="title-name" href="/">超速蜗牛的博客</a><span id="now-time"></span></div></div></header><div id="content-outer"><div id="content-inner"><article id="post"><div class="post-header"><div class="title">What Is PowerShell</div><div class="container"><time class="button-hover post-date"><i class="fas fa-calendar-alt article-icon" aria-hidden="true"></i> 发表于 2019-07-30 | 更新于 2019-08-18</time><!--time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]--><div class="button-hover categories"><i class="fa fa-inbox article-icon" aria-hidden="true"></i><a class="link-a" href="/categories/powershell/">powershell</a></div><div class="button-hover tags"><i class="fa fa-tag article-icon" aria-hidden="true"></i><a class="link-a" href="/tags/搬运/">搬运</a></div></div></div><div class="main-content"><p>本文最初创作于: 2018/02/03 01:05:00, 始发于开源中国博客,现搬运过来.</p>
+<p>虽然用了几年PowerShell,但是却没用系统的了解过它的发展由来,最近看了维基百科<a href="https://en.wikipedia.org/wiki/Windows_PowerShell" target="_blank" rel="noopener">PowerShell- Wikipedia</a>(百度百科感觉写的有点乱),打算汉化下(其实大多是谷歌翻译(✿◡‿◡),有能力还是看原文,感觉单词也不是太难).</p>
+<a id="more"></a>
+<hr>
+<h1 id="PowerShell"><a href="#PowerShell" class="headerlink" title="PowerShell"></a>PowerShell</h1><p>PowerShell是一个来自微软的任务自动化和配置管理框架，由一个命令行shell和相关的脚本语言组成。 最初只是一个Windows组件，称为Windows PowerShell. 2016年8月18日推出PowerShell Core(<a href="https://docs.microsoft.com/en-us/powershell/scripting/whats-new/what-s-new-in-powershell-core-60?view=powershell-5.1" target="_blank" rel="noopener">What’s_ _New_in_PowerShell_Core_6.0</a> )后其开始开源和跨平台. 前者(PowerShell)是建立在<a href="https://en.wikipedia.org/wiki/.NET_Core" target="_blank" rel="noopener">.NET Framework</a>上的，而后者(PowerShell Core)是在<a href="https://en.wikipedia.org/wiki/.NET_Framework#.NET_Core" target="_blank" rel="noopener">.NET Core</a>上建立的。</p>
+<p>在PowerShell中，管理任务通常由cmdlets（发音为command-lets）执行，这些cmdlets其实就是实现特定操作的专用.NET类.   通过访问不同数据存储中的数据（如文件系统<a href="https://en.wikipedia.org/wiki/File_system" target="_blank" rel="noopener">file system</a>或注册表<a href="https://en.wikipedia.org/wiki/Windows_Registry" target="_blank" rel="noopener">registry</a>）,使得PowerShell能够借由数据提供商(<em>providers</em>)来完成这些工作. 第三方开发人员可以开发自己的cmdlets并将其添加到PowerShell中. 多个cmdlets可一起合并到脚本中工作.</p>
+<p>PowerShell提供了可以完全访问<a href="https://en.wikipedia.org/wiki/Component_Object_Model" target="_blank" rel="noopener">COM</a>和<a href="https://en.wikipedia.org/wiki/Windows_Management_Instrumentation" target="_blank" rel="noopener">WMI</a>的权限，使得管理员能够在本地和远程Windows系统以及<a href="https://en.wikipedia.org/wiki/WS-Management" target="_blank" rel="noopener">WS-Management</a> 和 <a href="https://en.wikipedia.org/wiki/Common_Information_Model_(computing)" target="_blank" rel="noopener">CIM</a>上执行管理任务，从而实现对远程Linux系统和网络设备的管理。PowerShell还提供了一个托管API，PowerShell运行时可以将其用于其他应用程序中。然后，这些应用程序可以使用PowerShell功能来实现某些操作，包括在图形界面展现出来的部分。此功能已在Microsoft Exchange Server 2007中使用, 其已将管理功能公开为PowerShell cmdlets和供应商,并且可加载图形化管理工具作为PowerShell托管,从而调用必要的cmdlets. 其他Microsoft应用程序（包括Microsoft SQL Server 2008）也通过PowerShell cmdlets实现了其在管理界面能够实现的操作。</p>
+<p>PowerShell含有基于自身控制台的大量帮助（类似于Unix shell中的手册页），可以通过Get-Help cmdlet访问。 本地帮助内容可以通过执行Update-Help cmdlet从Internet上获取到本地从而离线使用。 此外也可以可以通过 -online参数直接从网上获取最新帮助信息.</p>
+<h2 id="1-背景-Background"><a href="#1-背景-Background" class="headerlink" title="1. 背景(Background)"></a>1. 背景(Background)</h2><p>用于个人计算机的每个Microsoft Windows版本都包含用于管理操作系统的命令行解释程序（<a href="https://en.wikipedia.org/wiki/Command_line_interpreter" target="_blank" rel="noopener">command line interpreter</a>(CLI)）。它的前身MS-DOS完全依赖CLI。具体为<a href="https://en.wikipedia.org/wiki/MS-DOS" target="_blank" rel="noopener">MS-DOS</a>和<a href="https://en.wikipedia.org/wiki/Windows_9x" target="_blank" rel="noopener">Windows 9x</a>中的<a href="https://en.wikipedia.org/wiki/COMMAND.COM" target="_blank" rel="noopener">COMMAND.COM</a>，以及<a href="https://en.wikipedia.org/wiki/Windows_NT" target="_blank" rel="noopener">Windows NT</a>系列操作系统中的<a href="https://en.wikipedia.org/wiki/Command_Prompt_(Windows)" target="_blank" rel="noopener">cmd.exe</a>(这个应该是大家最熟悉的黑色窗口,哈哈)。两者都支持一些基本的内部命令,只是出于别的一些目的，才设计成了单独的控制台应用程序。他们还包括一个基本的脚本语言（批处理文件<a href="https://en.wikipedia.org/wiki/Batch_files" target="_blank" rel="noopener">batch files</a>）,用来自动执行各种任务。然而它们并不能自动化处理图形用户界面（<strong><em>[</em>Graphical_ <em>user</em> <em>interface_](<a href="https://en.wikipedia.org/wiki/Graphical_user_interface)-" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Graphical_user_interface)-</a></em></strong>GUI）功能的所有方面，部分原因是命令行的操作等同于有限的操作，并且脚本语言只是基本的。 虽然在Windows Server 2003中，情况有所改善，但脚本支持仍然不尽人意。</p>
+<p>Microsoft试图在1998年的<a href="https://en.wikipedia.org/wiki/Windows_98" target="_blank" rel="noopener">Windows 98</a>操作系统中引入<a href="https://en.wikipedia.org/wiki/Windows_Script_Host" target="_blank" rel="noopener">Windows Script Host</a>以及基于命令行的宿主：cscript.exe来解决其中的一些缺点。它集成了<a href="https://en.wikipedia.org/wiki/Active_Script" target="_blank" rel="noopener">Active Script</a>引擎，并允许兼容的语言(如<a href="https://en.wikipedia.org/wiki/JScript" target="_blank" rel="noopener">JScript</a>和<a href="https://en.wikipedia.org/wiki/VBScript" target="_blank" rel="noopener">VBScript</a>)编写脚本，通过利用COM应用程序提供公开的API。然而，它仍有其自身的不足之处：其文档不易获取，并且在几个高调的计算机病毒利用其安全规定中的弱点之后，它迅速成为了系统漏洞载体的代名词。不同版本的Windows提供了各种专用的命令行解释器（如<a href="https://en.wikipedia.org/wiki/Netsh" target="_blank" rel="noopener">netsh</a>和<a href="https://en.wikipedia.org/wiki/Windows_Management_Instrumentation_Command-line" target="_blank" rel="noopener">WMIC</a>）以及它们自己的命令集，但它们不能互操作彼此。</p>
+<p>在2017年9月13日发表的一篇采访中,<a href="https://en.wikipedia.org/wiki/Jeffrey_Snover" target="_blank" rel="noopener">Jeffrey Snover</a>(powershell项目创始人)解释了这个项目的动机：</p>
+<blockquote>
+<p>我一直在推动一系列的管理变更，最初我尝试直接把UNIX工具放在Windows上，然而它们就是不能工作。对嘛!因为Windows和Linux之间存在核心体系架构差异。在Linux上，一切都是ASCII文本文件，所以任何可以操纵的东西都是一个管理工具。 AWK，grep，sed？ 真是快乐的时光啊！</p>
+<p>我将这些工具带到Windows上却未能帮助管理Windows，因为在Windows中，所有东西都是<a href="https://en.wikipedia.org/wiki/API" target="_blank" rel="noopener">API</a>,它们返回的是结构化数据。 所以，这没有帮助。 于是我就想到了PowerShell的这个点子，我说：“嘿，我们可以做得更好。”</p>
+</blockquote>
+<p>微软在2002年就已经着手开发一种新的命令行管理方法，其中就包括称为Monad（也被称为Microsoft Shell或MSH）的CLI。其中的思想是在2002年8月发表的一篇名为“Monad Manifesto”的白皮书中发表的.其背后的思想是在2002年8月发表的一篇名为“Monad Manifesto”的白皮书中发表的。 Monad旨在成为全新的可扩展CLI，其全新的设计将能够自动执行全面的核心管理任务。 在2003年10月洛杉矶举办的专业发展会议上,微软首次展示了Monad。几个月后,一个内部测试版程序已具雏形，并最终演变为了一个公开的测试版程序。</p>
+<p>微软于</p>
+<p>2005年6月17日发布了第一个Monad公开测试版</p>
+<p>2005年9月11日发布了Beta 2版</p>
+<p>2006年1月10日发布了Beta 3版</p>
+<p>不久之后，2006年4月25日，微软正式宣布Monad已被重命名为Windows PowerShell，将其定位为其管理技术产品的重要组成部分。并同时发布了PowerShell的候选版本1。</p>
+<p>PowerShell版本1的候选版本2于2006年9月26日发布，最终于2006年11月14日发布到网络（RTW），并在TechEd Barcelona上宣布。 早期版本的Windows的PowerShell于2007年1月30日发布.</p>
+<p>早在PowerShell v1.0发布之前就,PowerShell v2.0的开发就已经开始了。在开发过程中，微软发布了三个社区技术预览（CTP）并供公开获取。 Windows PowerShell v2.0的最后一个CTP版本已于2008年12月发布。</p>
+<p>作为Windows 7和Windows Server 2008 R2的集成部分，PowerShell v2.0于2009年8月完全完成并发布到生产工作环境中。适用于Windows XP，Windows Server 2003，Windows Vista和Windows Server 2008的PowerShell版本已于2009年10月发布，同时提供32位和64位平台下载。</p>
+<p>Windows 10提供了PowerShell的测试框架(<a href="https://blogs.technet.microsoft.com/heyscriptingguy/2015/12/14/what-is-pester-and-why-should-i-care/" target="_blank" rel="noopener">What is Pester and Why Should I Care</a>)</p>
+<p>2016年8月18日，微软宣布他们已将PowerShell开源并且跨平台，支持Windows，OS X，CentOS和Ubuntu。源代码业已发布到<a href="https://en.wikipedia.org/wiki/GitHub" target="_blank" rel="noopener">GitHub</a>上. 开源此举创建了一个名为“PowerShell Core”的PowerShell的第二化身，它运行在<a href="https://en.wikipedia.org/wiki/.NET_Core" target="_blank" rel="noopener">.NET Core</a>。其与在完整<a href="https://en.wikipedia.org/wiki/.NET_Framework" target="_blank" rel="noopener">.NET Framework</a>上运行的“Windows PowerShell”是完全不同的。</p>
+<p>从5.1开始，PowerShell Core与Windows Server 2016 Nano Server捆绑在一起.</p>
+<h2 id="2-设计-Design"><a href="#2-设计-Design" class="headerlink" title="2. 设计(Design)"></a>2. 设计(Design)</h2><p>PowerShell的开发人员基于<a href="https://en.wikipedia.org/wiki/POSIX_1003.2" target="_blank" rel="noopener">POSIX 1003.2</a>(<a href="https://www.baidu.com/link?url=v2VVyVrQwsKVVhBXGvC9lpYETgoqHGJZJXReqH-NslUQiAgEk51GOCbuAovBBn4ZO3w_YjJa8AXDtbvmbdpYU_&wd=&eqid=c414335f0001b361000000045a71e0ea" target="_blank" rel="noopener">POSIX</a>  <a href="https://baike.baidu.com/item/%E5%8F%AF%E7%A7%BB%E6%A4%8D%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%8E%A5%E5%8F%A3" target="_blank" rel="noopener">可移植操作系统接口</a>)的工具核心语法.</p>
+<p>Windows PowerShell可以执行四种命名命令：</p>
+<ul>
+<li>cmdlets（用于与PowerShell交互的.NET Framework程序）</li>
+<li>PowerShell脚本（以.ps1为后缀的文件）</li>
+<li>PowerShell功能函数</li>
+<li>独立的可执行程序</li>
+</ul>
+<p>如果一个命令是一个独立的可执行程序，PowerShell将在一个单独的进程中启动它;如果它是一个cmdlet，它将在当前PowerShell进程中执行。PowerShell提供了一个交互式命令行界面，用于输入命令并输出执行结果。基于Win32控制台的用户界面提供可自定义<strong><em>tab</em></strong> 补全(<a href="https://en.wikipedia.org/wiki/Command-line_completion" target="_blank" rel="noopener">tab completion</a>)。PowerShell可以为cmdlet创建别名,在运行时PowerShell会将别名转换为原始命令执行。PowerShell既可通过参数名称又可通过参数位置来获取其传入的参数值。在执行cmdlet时，参数值绑定到参数的工作是由PowerShell本身完成的，但是对于外部可执行文件，参数由外部可执行文件解析，而与PowerShell解释无关。</p>
+<p>PowerShell扩展类型系统（ETS）虽然基于.NET类型系统，但却具有扩展的语义（例如propertySets和第三方扩展性）。例如，它通过仅暴露数据字段，属性和方法的子集以及指定自定义格式和排序行为来启用对象的不同视图的创建。 这些视图使用基于XML的配置文件映射到原始对象。</p>
+<p>(我理解如下所示,查看notepad++,选择不同属性,视图也不一样,前者默认, 后者自定义)</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; ps notepad++</span><br><span class="line"></span><br><span class="line">Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName</span><br><span class="line">-------  ------    -----      -----     ------     --  -- -----------</span><br><span class="line">    <span class="number">416</span>      <span class="number">42</span>    <span class="number">21636</span>      <span class="number">41208</span>       <span class="number">2.98</span>  <span class="number">15244</span>   <span class="number">2</span> notepad++</span><br><span class="line"></span><br><span class="line">PS C:\Users\ChaoYue&gt; ps notepad++|select StartTime,MainWindowTitle</span><br><span class="line"></span><br><span class="line">StartTime          MainWindowTitle</span><br><span class="line">---------          ---------------</span><br><span class="line"><span class="number">2018</span>/<span class="number">1</span>/<span class="number">31</span> <span class="number">21</span>:<span class="number">56</span>:<span class="number">40</span> *new <span class="number">1</span> - Notepad++</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-Cmdlets"><a href="#2-1-Cmdlets" class="headerlink" title="2.1 Cmdlets"></a>2.1 Cmdlets</h3><p>Cmdlets是PowerShell环境中实现特定功能的专用命令,是PowerShell堆栈中的本地命令。Cmdlets遵循动词-名词(Verb-Noun)命名模式，如Get-ChildItem，有助于使其具有自描述性(就是看到它,就知道它大概是要干啥的,如Get-Date 就是获取日期的)。Cmdlets将其结果作为对象输出，还可以接收对象作为输入，使其无论在管道(|)左边还是右边都能正常工作。如果一个cmdlet输出多个对象，那么在处理下一个对象之前，集合中的每个对象都会在整个管道中依次向下传递。</p>
+<p>Cmdlets是专门的.NET类，在运行时PowerShell将其实例化调用。Cmdlets派生自<code>Cmdlet</code> 或 <code>PSCmdlet</code>，后者在cmdlet需要与PowerShell交互运行时使用。这些基类指定了某些方法 -  <code>BeginProcessing()</code>, <code>ProcessRecord()</code> 和 <code>EndProcessing()</code> - cmdlet会将其重写并提供相同功能。无论何时运行cmdlet，PowerShell都会依次调用这些方法，如果接收到管道输入，则会调用 <code>ProcessRecord()</code>。如果一个对象的集合被传入管道，那么针对该集合中的每个对象都会调用该方法。实现Cmdlet的类必须具有一个.NET属性 -  <code>CmdletAttribute</code> - 它指定构成该cmdlet名称的动词和名词。 常见的动词是作为枚举提供的.</p>
+<p>如果cmdlet接收任一管道输入或命令行参数输入，则必须在类中具有相应的属性，并使用<a href="https://en.wikipedia.org/wiki/Mutator_method" target="_blank" rel="noopener">mutator</a>实现.PowerShell使用参数值或管道输入来调用mutator，mutator实现保存在类变量中。这些值然后由实现该功能的方法引用。映射到命令行参数的属性由 <code>ParameterAttribute</code>标记，并在调用 <code>BeginProcessing()</code>之前设置。 那些映射到管道的输入的也会被 <code>ParameterAttribute</code>触及，但是 <code>ValueFromPipeline</code>属性参数集。</p>
+<p>这些cmdlet类的实现可以引用任何.NET API，并且可以使用任何.NET语言。另外，PowerShell还提供了一些可用的API，比如 <code>WriteObject()</code>，其用于访问PowerShell特有的功能，比如将结果对象写入管道。Cmdlets可以直接使用.NET数据访问API，也可以使用PowerShell提供商的PowerShell基础结构，这使得数据存储可以使用唯一路径进行寻址(ls HKCU:\ 查看注册表)。数据存储使用驱动器号和其中的层次结构进行访问，并作为目录进行寻址。 Windows PowerShell附带提供了文件系统，注册表，证书存储以及命令别名，变量和函数的命名空间。Windows PowerShell还包括各种用于管理各种Windows系统（包括文件系统）的cmdlet，或者使用Windows Management Instrumentation来控制Windows组件。 其他应用程序可以使用PowerShell注册cmdlet，从而允许它管理它们，如果它们包含任何数据存储（如数据库），则可以添加特定的提供程序。</p>
+<p>PowerShell V2添加了一个更便携的Cmdlet版本，称为模块(Modules)。 PowerShell V2发行说明指出：</p>
+<blockquote>
+<p>模块允许脚本开发人员和管理员以自包含的，可重用的单元对Windows PowerShell代码进行分区和组织，模块中的代码在自己独立的上下文中执行，不会影响模块之外的状态。 它也可以让你通过使用脚本来定义受限制的运行空间环境.</p>
+</blockquote>
+<h3 id="2-2-管道-Pipeline"><a href="#2-2-管道-Pipeline" class="headerlink" title="2.2 管道(Pipeline)"></a>2.2 管道(Pipeline)</h3><p>PowerShell实现了管道的概念，该管道可以将一个cmdlet的输出作为输入传输到另一个cmdlet。 例如，Get-Process cmdlet的输出可以通过管道传递到Where-Object，以过滤任何少于1 MB分页内存的进程，然后过滤到Sort-Object cmdlet（例如，通过句柄 计数），然后最后到Select-Object cmdlet，只选择前10个（即基于句柄计数的10个进程）。</p>
+<p>(我的少于1 MB分页内存的进程只有5个,所以只选取前三个,作为演示)</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="built_in">Get-Process</span>|?&#123;<span class="variable">$_</span>.PM <span class="nomarkup">-lt</span> <span class="number">1</span>MB&#125;|<span class="built_in">Sort-Object</span> Handles|select -First <span class="number">3</span></span><br><span class="line"></span><br><span class="line">Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName</span><br><span class="line">-------  ------    -----      -----     ------     --  -- -----------</span><br><span class="line">      <span class="number">0</span>       <span class="number">0</span>       <span class="number">52</span>          <span class="number">8</span>                 <span class="number">0</span>   <span class="number">0</span> Idle</span><br><span class="line">      <span class="number">0</span>       <span class="number">0</span>       <span class="number">32</span>          <span class="number">4</span>              <span class="number">2920</span>   <span class="number">0</span> Memory Compression</span><br><span class="line">     <span class="number">39</span>       <span class="number">4</span>      <span class="number">584</span>       <span class="number">2660</span>              <span class="number">7088</span>   <span class="number">0</span> Locator</span><br></pre></td></tr></table></figure>
+
+<p>与Unix管道一样，PowerShell管道可以使用 <code>|</code>构造复杂的命令连接命令的不同阶段。 但是，PowerShell管道与Unix管道的不同之处在于，在PowerShell运行时间内执行的阶段不是由操作系统协调的一组进程执行，而是将结构化的.NET对象（而不是字节流）从一个阶段传递到下一个阶段。 在PowerShell运行环境中使用对象并执行阶段消除了序列化数据结构的需要，或者通过显式解析文本来输出提取它们。 对象自身也可以封装某些在包含的数据上工作的函数，这些函数反过来可以再被命令使用。对于管道中的最后一个cmdlet，PowerShell会自动将其输出对象传递给 <code>Out-Default</code>cmdlet，该cmdlet将对象转换为格式对象流，然后将其输出到屏幕。</p>
+<p>因为所有PowerShell对象都是.NET对象，所以它们共享一个 <code>.ToString()</code>方法，但调用该方法时,其将检索对象中数据的文本表示并输出给下一个命令。 另外，PowerShell允许自定义格式化输出，因此可以通过选择显示哪些数据元素以及以何种方式来定制对象的文本表示。 但是，为了保持向后兼容性，如果在管道中使用外部可执行文件，它将接收代表对象的文本流，而不是直接与PowerShell类型系统集成</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="built_in">Get-Date</span> <span class="comment"># 原始输出</span></span><br><span class="line">(<span class="built_in">Get-Date</span>).ToString() <span class="comment"># 字符串输出</span></span><br><span class="line">ps powershell_ise|ft <span class="comment"># 表格输出</span></span><br><span class="line">ps powershell_ise|fl <span class="comment"># 目录输出</span></span><br><span class="line"></span><br><span class="line"><span class="number">2018</span>年<span class="number">2</span>月<span class="number">1</span>日 <span class="number">23</span>:<span class="number">00</span>:<span class="number">10</span></span><br><span class="line"><span class="number">2018</span>/<span class="number">2</span>/<span class="number">1</span> <span class="number">23</span>:<span class="number">00</span>:<span class="number">10</span></span><br><span class="line"></span><br><span class="line">Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName</span><br><span class="line">-------  ------    -----      -----     ------     --  -- -----------</span><br><span class="line">    <span class="number">895</span>      <span class="number">76</span>   <span class="number">149856</span>     <span class="number">171776</span>       <span class="number">9.19</span>   <span class="number">9448</span>   <span class="number">1</span> powershell_ise</span><br><span class="line"></span><br><span class="line">Id      : <span class="number">9448</span></span><br><span class="line">Handles : <span class="number">886</span></span><br><span class="line">CPU     : <span class="number">9.1875</span></span><br><span class="line">SI      : <span class="number">1</span></span><br><span class="line">Name    : powershell_ise</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-脚本-Scripting"><a href="#2-3-脚本-Scripting" class="headerlink" title="2.3 脚本(Scripting)"></a>2.3 脚本(Scripting)</h3><p>Windows PowerShell包含一个动态类型的脚本语言，可以使用命令执行复杂的操作。脚本语言支持变量，函数，分支（if-then-else），循环（while，do，for和foreach），结构化错误/异常处理和闭包/ lambda表达式，并且也集成了.NET。PowerShell脚本中的变量前缀为$。可以分配任何值，包括cmdlet的输出到变量中。 字符串可以用单引号或双引号引起来：使用双引号时，即使引号位于引号内，变量也会被展开。 用美元符号（如${C:\foo.txt}）括起来的大括号中的文件路径将创建一个对文件内容的引用。 如果将它用作L值(=号左边)，则分配给它的任何内容都将写入该文件。 当用作R值时(=号右边)，文件的内容将被读取。 如果是分配一个对象到变量中，这一对象会先被序列化然后再被存储到变量中。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="variable">$n</span>=<span class="number">1</span></span><br><span class="line"><span class="built_in">write-host</span> <span class="string">"--I'm <span class="variable">$n</span>--, this won't print `$n in this line"</span></span><br><span class="line"><span class="variable">$ps</span>=<span class="built_in">Get-Process</span> powershell_ise</span><br><span class="line"><span class="built_in">Write-Host</span> <span class="string">"--Out put variable from cmdlet--"</span></span><br><span class="line"><span class="variable">$ps</span></span><br><span class="line"><span class="built_in">write-host</span> <span class="string">"----------------------R-Value-------------------------"</span></span><br><span class="line"><span class="built_in">write-host</span> $&#123;D:\temp\new.txt&#125; <span class="comment"># 等价于 cat D:\temp\new.txt</span></span><br><span class="line">$&#123;D:\temp\new.txt&#125;=<span class="string">"powershell left value"</span></span><br><span class="line"><span class="built_in">write-host</span> <span class="string">"----------------------L-Value-------------------------"</span></span><br><span class="line"><span class="built_in">write-host</span> $&#123;D:\temp\new.txt&#125; <span class="comment"># 等价于 cat D:\temp\new.txt</span></span><br><span class="line"></span><br><span class="line">--I<span class="string">'m 1--, this won'</span>t print <span class="variable">$n</span> <span class="keyword">in</span> this line</span><br><span class="line">--Out put variable from cmdlet--</span><br><span class="line"></span><br><span class="line">Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName</span><br><span class="line">-------  ------    -----      -----     ------     --  -- -----------</span><br><span class="line">    <span class="number">968</span>      <span class="number">83</span>   <span class="number">151172</span>     <span class="number">176624</span>      <span class="number">14.34</span>   <span class="number">9448</span>   <span class="number">1</span> powershell_ise</span><br><span class="line">----------------------R-Value-------------------------</span><br><span class="line">powershell learning</span><br><span class="line">----------------------L-Value-------------------------</span><br><span class="line">powershell left value</span><br></pre></td></tr></table></figure>
+
+<p>就像在C＃语法中一样, 对象成员的值可以使用 <code>.</code>符号来访问。PowerShell提供了特殊的变量，比如 <code>$args</code>，它是从命令行传递给函数的所有命令行参数的集合数组，以及 <code>$_</code>，它指代管道中的当前对象。 </p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="variable">$ps</span>=<span class="built_in">Get-Process</span> powershell_ise</span><br><span class="line"><span class="variable">$ps</span>.MainWindowTitle</span><br><span class="line"><span class="keyword">function</span> test(<span class="variable">$first</span>, <span class="variable">$second</span>)&#123;</span><br><span class="line">    <span class="built_in">write-host</span> <span class="string">"<span class="variable">$first</span> is the first paramter"</span></span><br><span class="line">    <span class="built_in">write-host</span> <span class="string">"<span class="variable">$second</span> is the second paramter"</span></span><br><span class="line">    <span class="variable">$cnt</span>=<span class="number">1</span></span><br><span class="line">    <span class="variable">$args</span>|%&#123;</span><br><span class="line">        <span class="built_in">write-host</span> <span class="string">"I'm the <span class="variable">$cnt</span> parameter: <span class="variable">$_</span> that provided to 'test' function"</span></span><br><span class="line">        <span class="variable">$cnt</span>++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">write-host</span> <span class="string">"----------test function with position paramters----------"</span></span><br><span class="line">test a b c d e</span><br><span class="line"><span class="built_in">write-host</span> <span class="string">"----------test function with named paramters----------"</span></span><br><span class="line">test -second b -first a c d e</span><br><span class="line">Windows PowerShell ISE</span><br><span class="line">----------test <span class="keyword">function</span> with position paramters----------</span><br><span class="line">a is the first paramter</span><br><span class="line">b is the second paramter</span><br><span class="line">I<span class="string">'m the 1 parameter: c that provided to '</span>test<span class="string">' function</span></span><br><span class="line"><span class="string">I'</span>m the <span class="number">2</span> parameter: d that provided to <span class="string">'test'</span> <span class="keyword">function</span></span><br><span class="line">I<span class="string">'m the 3 parameter: e that provided to '</span>test<span class="string">' function</span></span><br><span class="line"><span class="string">----------test function with named paramters----------</span></span><br><span class="line"><span class="string">a is the first paramter</span></span><br><span class="line"><span class="string">b is the second paramter</span></span><br><span class="line"><span class="string">I'</span>m the <span class="number">1</span> parameter: c that provided to <span class="string">'test'</span> <span class="keyword">function</span></span><br><span class="line">I<span class="string">'m the 2 parameter: d that provided to '</span>test<span class="string">' function</span></span><br><span class="line"><span class="string">I'</span>m the <span class="number">3</span> parameter: e that provided to <span class="string">'test'</span> <span class="keyword">function</span></span><br></pre></td></tr></table></figure>
+
+<p>PowerShell还提供了数组和关联数组。 PowerShell脚本语言还可以立即评估在命令行中输入的算术表达式，并解析常用缩写，如GB，MB和KB。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="number">1</span>..<span class="number">5</span>|%&#123;</span><br><span class="line">    <span class="built_in">write-host</span> <span class="string">"I'am <span class="variable">$_</span> in this array"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="number">1024</span> / <span class="number">1</span>KB</span><br><span class="line"><span class="number">1048576</span> / <span class="number">1</span>MB</span><br><span class="line"><span class="number">1073741824</span> / <span class="number">1</span>GB</span><br><span class="line">I<span class="string">'am 1 in this array</span></span><br><span class="line"><span class="string">I'</span>am <span class="number">2</span> <span class="keyword">in</span> this array</span><br><span class="line">I<span class="string">'am 3 in this array</span></span><br><span class="line"><span class="string">I'</span>am <span class="number">4</span> <span class="keyword">in</span> this array</span><br><span class="line">I<span class="string">'am 5 in this array</span></span><br></pre></td></tr></table></figure>
+
+<p>PowerShell使用 <code>function</code>关键字来创建函数(如上文中的test函数所示),可以通过位置或者制定名称来获取传入参数对应的值,同时PowerShell还支持开关参数和动态参数.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="keyword">function</span> test([switch]<span class="variable">$on</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$on</span>)&#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">"switch on"</span></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">Write-Host</span> <span class="string">"switch off"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">test ; test -on</span><br><span class="line"><span class="keyword">switch</span> off</span><br><span class="line"><span class="keyword">switch</span> on</span><br></pre></td></tr></table></figure>
+
+<p>PowerShell允许通过提供括号(<code>[]</code>)中的名称空间来调用任何.NET方法，然后使用一对冒号(<code>::</code>)来指示静态方法。 例如， <code>[System.Console]::WriteLine(&quot;PowerShell&quot;)</code>。 对象是使用 <code>New-Object</code> cmdlet创建的。 调用.NET对象的方法是通过使用 <code>.</code> 来实现的,和C#语法一样.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="built_in">New-Object</span> System.DateTime</span><br><span class="line"></span><br><span class="line"><span class="number">0001</span>年<span class="number">1</span>月<span class="number">1</span>日 <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br><span class="line"></span><br><span class="line">PS C:\Users\ChaoYue&gt; (<span class="built_in">New-Object</span> System.DateTime).AddDays(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="number">0001</span>年<span class="number">1</span>月<span class="number">2</span>日 <span class="number">0</span>:<span class="number">00</span>:<span class="number">00</span></span><br></pre></td></tr></table></figure>
+
+<p>PowerShell接受字符串，包括原始和转义的。 包含在单引号之间的字符串是原始字符串，而用双引号括起来的字符串是转义字符串。 PowerShell将直线和曲线引号视为等同(个人理解 是中英文的双引号都认同为英文状态下的双引号”” “”)。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="variable">$str</span>=<span class="string">'powershell'</span></span><br><span class="line"><span class="string">'this is $str'</span></span><br><span class="line"><span class="string">"this is <span class="variable">$str</span>"</span></span><br><span class="line">this is <span class="variable">$str</span></span><br><span class="line">this is powershell</span><br></pre></td></tr></table></figure>
+
+<p>对于错误处理，PowerShell提供了一个基于.NET的异常处理机制。 如果发生错误，则抛出带有错误信息的异常，这些对象将使用 <code>try ... catch</code>构造捕获（尽管也支持<code>trap</code> 构造捕获）。 PowerShell可以配置为静默恢复执行，而不会抛出异常; 这可以通过单个命令，单个会话或者永久的完成。(就是忽略错误异常一直执行下去,并且这些发生的错误不会被捕获也不会记录在系统变量$error里面的).</p>
+<p>使用PowerShell编写的脚本可以保存在.ps1文件或.psm1文件（后者用于实现模块）中的会话之间。之后，可以使用整个脚本或保存在其中的单个函数。 脚本和函数类似于cmdlet操作，因为它们可以用作管道中的命令，也可以给其绑定参数。管道对象可以在函数，脚本和cmdlet之间无缝传递。 为了防止意外运行脚本，默认情况下禁用PowerShell执行脚本，并且必须显式启用脚本执行。 脚本的启用可以在系统，用户或会话级别执行(Get-ExecutionPolicy &amp; Set-ExecutionPolicy)。 可以对PowerShell脚本进行签名以验证其完整性，并受到代码访问安全性的约束。</p>
+<p>PowerShell脚本语言支持与C系列中许多编程语言所支持的科学记法类似的二进制前缀记法.(暂时不懂这个)</p>
+<h3 id="2-4-托管-Hosting"><a href="#2-4-托管-Hosting" class="headerlink" title="2.4 托管(Hosting)"></a>2.4 托管(Hosting)</h3><p>还可以将PowerShell嵌入到其他管理应用程序中，该应用程序使用PowerShell运行时来实现管理功能。为此，PowerShell提供了托管宿主API。 通过这些API，应用程序可以在自己的进程中实例化运行空间（PowerShell运行时的一个实例），并作为Runspace对象公开。运行空间的状态被封装在一个SessionState对象中。 在创建运行空间时，Windows PowerShell运行时将初始化实例，包括:初始化供应商;枚举cmdlet，并相应地更新SessionState对象。开启的运行空间要么进行同步处理要么异步处理。之后，它才可以用来执行命令。</p>
+<p>为了执行一个命令，必须创建一个管道（由一个管道对象 <code>Pipeline</code>表示）并且与这个管理空间相关联。然后使用组成管道的cmdlet填充管道对象。对于顺序操作（如在PowerShell脚本中），将为每个语句创建一个管道对象，并嵌套在另一个管道对象内。在创建管道时，Windows PowerShell将调用管道处理器，该处理器将cmdlet解析为各自的程序集（命令处理器），并将其引用添加到管道，并将它们与<code>InputPipe</code>, <code>Outputpipe</code> 和 <code>ErrorOutputPipe</code>对象相关联，以表示 与管道连接。类型和参数使用反射来验证。 一旦建立了管道，托管调用 <code>Invoke()</code>方法来运行这些命令，或者它的异步等价的 <code>InvokeAsync()</code>。 如果管道在管道末端具有 <code>Write-Host</code> cmdlet，则会将结果写入控制台屏幕。 如果没有，结果将交给托管，这可能要么进一步处理或显示输出本身。</p>
+<p>Microsoft Exchange Server 2007使用托管API来提供其管理GUI。 GUI中公开的每个操作都映射到一系列PowerShell命令（或管道）。 宿主创建管道并执行它们。 事实上，交互式PowerShell控制台本身就是一个PowerShell宿主，它可以解释在命令行输入的脚本，并创建必要的管道对象并调用它们。</p>
+<h2 id="3-预期状态配置-Desired-State-Configuration"><a href="#3-预期状态配置-Desired-State-Configuration" class="headerlink" title="3. 预期状态配置(Desired State Configuration )"></a>3. 预期状态配置(<a href="https://www.baidu.com/link?url=unwCbCVByc_JryBmeuA4y1WqSXst6sqWjGEi5dHKerDS6HcaJSZwrD6ty6shFqznG_N2Oi5nbVl-0FDWyWWr1K&wd=&eqid=8d2deff10000750d000000045a74787e" target="_blank" rel="noopener">Desired State Configuration </a>)</h2><p>DSC允许声明性地指定如何配置软件环境。 在运行配置时，DSC（和配置调用的资源）将“使其如此”，确保系统处于配置所布局的状态。 DSC 配置也是幂等的：无论配置声明什么状态，本地配置管理器 (LCM) 都将继续确保计算机已配置为该状态。</p>
+<h2 id="4-版本-Versions"><a href="#4-版本-Versions" class="headerlink" title="4. 版本(Versions)"></a>4. 版本(Versions)</h2><p>最初使用代码名称“Monad”，PowerShell首次在2003年9月的专业开发人员大会上公开发布。所有主要版本仍然受支持，每个主要版本都具有与之前版本的向后兼容性。</p>
+<h3 id="4-1-PowerShell-1-0"><a href="#4-1-PowerShell-1-0" class="headerlink" title="4.1 PowerShell 1.0"></a>4.1 PowerShell 1.0</h3><p>PowerShell 1.0于<strong>2006年11</strong>月发布，用于Windows XP SP2，Windows Server 2003 SP1和Windows Vista。 它是Windows Server 2008的可选组件。</p>
+<h3 id="4-2-PowerShell-2-0"><a href="#4-2-PowerShell-2-0" class="headerlink" title="4.2 PowerShell 2.0"></a>4.2 PowerShell 2.0</h3><p>PowerShell 2.0集成在了<a href="https://en.wikipedia.org/wiki/Windows_7" target="_blank" rel="noopener">Windows7</a>(2009年发布)和Windows Server 2008 R2中，并针对带有Service Pack 3的Windows XP，带有Service Pack 2的Windows Server 2003和带有Service Pack 1的Windows Vista进行了发布。</p>
+<p>除了新增240多个cmdlet之外，PowerShell v2还包括对脚本语言和托管API的更改。</p>
+<p>以下为PowerShell 2.0的新特性：</p>
+<ul>
+<li><strong>PowerShell远程处理</strong>：使用<a href="https://en.wikipedia.org/wiki/WS-Management" target="_blank" rel="noopener">WS-Management</a>，PowerShell 2.0允许在远程机器或大量远程机器上调用脚本和cmdlet。</li>
+<li><strong>后台作业</strong>：也称为_PSJob_，它允许一个命令序列（脚本）或管道异步调用。 作业可以在本地机器或多个远程机器上运行。 PSJob中的交互式cmdlet会阻止作业的执行，直到读取用户输入为止。</li>
+<li><strong>事件</strong>：使得cmdlet和开发人员可以执行事件操作。 PowerShell 2.0包括用于启动，提交和回滚_PSTransaction_的事件cmdlet，以及用于管理和指导事件到参与的cmdlet和提供商操作的功能。 PowerShell Registry提供商支持事件。</li>
+<li><strong>高级函数</strong>：这些是使用PowerShell脚本语言编写的cmdlet。 最初被称为“脚本cmdlet”，这个功能后来改名为“高级函数”。[60]</li>
+<li><strong>步级管道(这是我根据英文SteppablePipelines自创的,百度查了下好像没这个词)</strong>: 这允许用户在管道流中运行cmdlet时,可以控制何时其 <code>BeginProcessing()</code>, <code>ProcessRecord()</code> 和<code>EndProcessing()</code>函数。</li>
+<li><strong>模块</strong>：它允许脚本开发人员和管理员在自包含的可重用单元中组织和分割PowerShell脚本。 来自模块的代码在自己独立的上下文中执行，不会影响模块外部的状态。 模块可以使用脚本定义受限制的运行空间环境。 他们持久化运行，包含公有和私有成员变量。</li>
+<li><strong>数据语言</strong>：PowerShell脚本语言的特定于域的子集，允许将数据定义与脚本分离，并允许在运行时（脚本国际化）将本地化的字符串资源导入到脚本中。</li>
+<li><strong>脚本调试</strong>：它允许在PowerShell脚本或函数中设置断点。 可以在行，行列，命令以及变量的读取或写入访问权限上设置断点。 它含有一系列通过脚本控制断点的cmdlet。</li>
+<li><strong>事件</strong>：此功能允许监听，转发和处理管理和系统事件。 当其管理实体的状态更改时,事件会将这一变动通知给PowerShell宿主。 它还使PowerShell脚本可以订阅<em>ObjectEvents</em>, <em>PSEvents</em>, 和_WmiEvents_，并以异步方式同步处理它们。</li>
+<li><strong>Windows PowerShell集成脚本环境（ISE）</strong>：PowerShell 2.0包括一个基于GUI的PowerShell主机，它提供集成的调试器，语法高亮显示，制表符完成功能以及在标签式UI中最多支持8个PowerShell启用Unicode的控制台（运行空间）,以及只运行脚本中选定的部分。</li>
+<li><strong>网络文件传输</strong>：本地支持使用后台智能传输服务（BITS）在计算机之间进行 优先/节制/异步 文件传输。</li>
+<li><strong>新的cmdlet</strong>：包括 <code>Out-GridView</code>，它在WPF GridView对象中, 允许的系统上，以及启用这一功能的ISE上显示表格数据。</li>
+<li><strong>新的操作符</strong>:  <code>-Split</code>, <code>-Join</code>, and 包装 (这个splatting不是太好翻译,暂译’包装’吧,详见<a href="http://www.baidu.com/link?url=sTsDcJHgaw3dwsCQ83GNmljxCN603IoT0RIwfAoQgDnAa9eLa72OO8NnBFf0AG_s27rSfe6vs-HUZsLFY3E6cwWWgq52F1uLaOb6E4_Z5Wi" target="_blank" rel="noopener">about__Splatting_</a>,相信看完自然就了解了) (<code>@</code>)操作符</li>
+<li><strong>带有Try-Catch-Finally的异常处理</strong>：与其他.NET语言不同，现在一个catch块即可捕获多个异常类型。</li>
+<li>*<em>嵌套字符串: *</em>PowerShell Here-Strings已经改进，现在可以嵌套。</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PS C:\Users\ChaoYue&gt; <span class="variable">$str</span>=<span class="string">@"</span></span><br><span class="line"><span class="string">this is a </span></span><br><span class="line"><span class="string">Nestable Here-Strings</span></span><br><span class="line"><span class="string">that will show in multi-lines</span></span><br><span class="line"><span class="string">"@</span></span><br><span class="line"><span class="built_in">write-host</span> <span class="variable">$str</span></span><br><span class="line"></span><br><span class="line">this is a </span><br><span class="line">Nestable Here-Strings</span><br><span class="line">that will show <span class="keyword">in</span> multi-lines</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>块注释</strong>：PowerShell 2.0支持使用&lt;＃和＃&gt;作为分隔符的块注释。</li>
+<li><strong>新的API</strong>：新的API包括将更多的PowerShell解析器和运行时控制权交给宿主，创建和管理Runspaces（RunspacePools）集合以及创建有限的运行空间,使得只能运行配置好的PowerShell子集。 新的API还支持参与Windows PowerShell管理事件。</li>
+</ul>
+<h3 id="4-3-PowerShell-3-0"><a href="#4-3-PowerShell-3-0" class="headerlink" title="4.3 PowerShell 3.0"></a>4.3 PowerShell 3.0</h3><p>PowerShell 3.0集成在了 <a href="https://en.wikipedia.org/wiki/Windows_8" target="_blank" rel="noopener">Windows 8</a> (<strong>2012年发布</strong>)和Windows Server 2012中. 同时Microsoft还使PowerShell 3.0可用于Windows 7 Service Pack 1，Windows Server 2008 Service Pack 1和Windows Server 2008 R2 Service Pack 1.</p>
+<p>PowerShell 3.0是一个更大的软件包Windows Management Framework 3.0（WMF3）的一部分，它还包含支持远程处理的WinRM服务。微软制作了几个WMF3社区技术预览版。 Windows Management Framework 3.0的早期社区技术预览2（CTP 2）版本于2011年12月2日发布。Windows Management Framework 3.0已于2012年12月发布，可供常规使用，默认情况下包含在Windows 8和Windows Server 2012中。</p>
+<p>以下为PowerShell 3.0的新特性：</p>
+<ul>
+<li><strong>计划作业</strong>：可以安排作业在预设的时间和日期上运行(类似于Windows上的计划任务)。</li>
+<li><strong>会话连接</strong>：会话可以断开连接并重新连接。 远程会话已经变得更容忍临时网络故障。</li>
+<li><strong>改进的代码编写</strong>：添加代码完成（智能感知）和片段。 PowerShell ISE允许用户使用对话框填写PowerShell cmdlet的参数。</li>
+<li><strong>委派支持</strong>：可以将管理任务委派给没有该类型任务权限的用户，而不授予他们永久的额外权限。</li>
+<li><strong>帮助更新</strong>：可以通过更新帮助命令(Update-Help)更新帮助文档。</li>
+<li><strong>自动模块检测</strong>：无论何时调用来自该模块的命令，都会隐式加载模块。 代码完成也适用于卸载的模块。</li>
+<li><strong>新命令</strong>：增加了数十个新模块，包括管理先前通过WMI执行的磁盘，卷，防火墙，网络连接和打印机管理的功能(现在用CimInstance来操作).</li>
+</ul>
+<h3 id="4-4-PowerShell-4-0"><a href="#4-4-PowerShell-4-0" class="headerlink" title="4.4 PowerShell 4.0"></a>4.4 PowerShell 4.0</h3><p>PowerShell 4.0集成在<a href="https://en.wikipedia.org/wiki/Windows_8.1" target="_blank" rel="noopener">Windows 8.1</a>(<strong>2013年发布</strong>)和Windows Server 2012 R2中。 同时微软还为Windows 7 SP1，Windows Server 2008 R2 SP1和Windows Server 2012提供了PowerShell 4.0。</p>
+<p>以下为PowerShell 4.0的新特性：</p>
+<ul>
+<li><strong>预期状态配置</strong>：声明性语言扩展和工具，可以为使用<a href="https://en.wikipedia.org/wiki/DMTF" target="_blank" rel="noopener">DMTF</a>管理标准和<a href="https://en.wikipedia.org/wiki/WS-Management" target="_blank" rel="noopener">WS-Management</a>协议的系统配置和管理配置数据</li>
+<li><strong>新的默认执行策略</strong>：在Windows服务器上，默认执行策略现在是RemoteSigned。</li>
+<li><strong>保存帮助</strong>：现在可以为安装在远程计算机上的模块保存帮助。</li>
+<li><strong>增强的调试功能</strong>：调试器现在支持调试工作流程，远程脚本执行以及跨PowerShell会话重新连接时仍保留调试会话。</li>
+<li><strong>-PipelineVariable开关</strong>：一个新的无处不在的参数，将当前的管道对象作为变量进行编程</li>
+<li><strong>网络诊断</strong>: 管理物理和Hyper-V的虚拟化网络交换机</li>
+<li><strong>Where和ForEach</strong> 方法语法提供了对对象进行过滤和迭代的替代方法。</li>
+</ul>
+<h3 id="4-5-PowerShell-5-0"><a href="#4-5-PowerShell-5-0" class="headerlink" title="4.5 PowerShell 5.0"></a>4.5 PowerShell 5.0</h3><p>包括PowerShell 5.0的Windows Management Framework（WMF）5.0 RTM在<strong>2016年2月24日</strong>重新发布到网站，在发布后有一个严重的错误。 主要功能包括OneGet PowerShell cmdlet，以支持Chocolatey基于存储库的包管理，并将对交换机管理的支持扩展到第2层网络交换机。</p>
+<p>以下为PowerShell 5.0的新特性：</p>
+<ul>
+<li>PowerShell类的定义（属性，方法）</li>
+<li>PowerShell .NET枚举</li>
+<li>调试远程进程中的PowerShell运行空间</li>
+<li>调试PowerShell后台作业</li>
+<li>所需的状态配置（DSC）本地配置管理器（LCM）版本2.0</li>
+<li>DSC部分配置</li>
+<li>DSC本地配置管理器元配置</li>
+<li>使用PowerShell类创作DSC资源</li>
+</ul>
+<p>PowerShell 5.1是在<strong>2016年8月2日</strong>和Windows Server 2016中随Windows 10周年更新一起发布的。PackageManagement现在支持代理，PSReadLine现在支持ViMode，并添加了两个新的cmdlet：Get-TimeZone和Set-TimeZone。 LocalAccounts模块允许添加/删除本地用户帐户。 2017年7月16日发布了针对Windows Vista，Windows 7，Windows Server 2008，Windows Server 2008 R2，Windows Server 2012和Windows Server 2012 R2的PowerShell 5.1预览版，并于<strong>2017年1月19日</strong>发布。</p>
+<p>从PowerShell 5.1版本开始,其迎来更加细化的“桌面”和“核心”两个版本。“桌面”版本是在完整的.NET Framework堆栈上运行的传统Windows PowerShell的延续。 “核心”版本运行在.NET Core上，与Windows Server 2016 Nano Server捆绑在一起。 为了减少占用空间，后者缺少一些功能，例如管理剪贴板的cmdlet或将计算机加入域，WMI版本1中的 cmdlets，事件日志cmdlets和配置文件。</p>
+<h3 id="4-6-PowerShell-Core-6-0"><a href="#4-6-PowerShell-Core-6-0" class="headerlink" title="4.6 PowerShell Core 6.0"></a>4.6 PowerShell Core 6.0</h3><p>PowerShell Core 6.0最早于<strong>2016年8月18</strong>日披露，当时微软公布了PowerShell Core，并决定让产品跨平台，独立于Windows，免费和开源。 它于2018年1月10日在Windows，MacOS和Linux上实现了全面的可用性。 它有自己的支持生命周期，并遵守Windows 10引入的Microsoft生命周期策略：仅支持最新版本的PowerShell Core。 微软预期每六个月发布一次PowerShell Core 6.0的小版本。</p>
+<p>这个版本的PowerShell最重大的变化是扩展到其他平台。 对于Windows管理员，这个版本的PowerShell没有任何主要的新功能。 在2018年1月11日接受社区采访时，PowerShell团队被要求列出将从Windows PowerShell 5.1迁移到PowerShell Core 6.0的Windows IT专业人员将会发生的十大最令人兴奋的事情; 作为回应，微软的Angel Calvo只能命名为两个：跨平台和开放源代码。</p>
+<h2 id="5-命令类似的cmdlets比较-Comparison-of-cmdlets-with-similar-commands"><a href="#5-命令类似的cmdlets比较-Comparison-of-cmdlets-with-similar-commands" class="headerlink" title="5. 命令类似的cmdlets比较(Comparison of cmdlets with similar commands)"></a>5. 命令类似的cmdlets比较(Comparison of cmdlets with similar commands)</h2><p>下表包含了PowerShell附带的cmdlet的集合，在其他众所周知的命令行解释器中记录了类似的命令。 这些类似的许多命令都是在PowerShell中定义为别名的，这使熟悉其他常见shell的人们可以很容易地开始工作。</p>
+<p>PowerShell cmdlet与其他命令行解释器的内部和外部命令的比较</p>
+<table>
+<thead>
+<tr>
+<th>PowerShell (Cmdlet)</th>
+<th>PowerShell (Alias)</th>
+<th><a href="https://en.wikipedia.org/wiki/Windows_Command_Prompt" target="_blank" rel="noopener">Windows Command Prompt</a></th>
+<th><a href="https://en.wikipedia.org/wiki/Unix_shell" target="_blank" rel="noopener">Unix shell</a></th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Get-ChildItem</td>
+<td>gci, dir, ls</td>
+<td><a href="https://en.wikipedia.org/wiki/Dir_(command)" target="_blank" rel="noopener">dir</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Ls" target="_blank" rel="noopener">ls</a></td>
+<td>Lists all files and folders in the current or given folder</td>
+</tr>
+<tr>
+<td>Test-Connection<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-85" target="_blank" rel="noopener">[a]</a></td>
+<td>N/A</td>
+<td><a href="https://en.wikipedia.org/wiki/Ping_(networking_utility)" target="_blank" rel="noopener">ping</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Ping_(networking_utility)" target="_blank" rel="noopener">ping</a></td>
+<td>Sends <a href="https://en.wikipedia.org/wiki/ICMP_Echo_Request" target="_blank" rel="noopener">ICMP echo requests</a> to the specified machine from the current machine, or instructs another machine to do so</td>
+</tr>
+<tr>
+<td>Get-Content</td>
+<td>gc, type, cat</td>
+<td><a href="https://en.wikipedia.org/wiki/TYPE_(DOS_command)" target="_blank" rel="noopener">type</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Cat_(Unix)" target="_blank" rel="noopener">cat</a></td>
+<td>Gets the content of a file</td>
+</tr>
+<tr>
+<td>Get-Command</td>
+<td>gcm</td>
+<td><a href="https://en.wikipedia.org/wiki/Help_(command)" target="_blank" rel="noopener">help</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Type_(Unix)" target="_blank" rel="noopener">type</a>, <a href="https://en.wikipedia.org/wiki/Which_(Unix)" target="_blank" rel="noopener">which</a>, <a href="https://en.wikipedia.org/w/index.php?title=Compgen_(Unix)&action=edit&redlink=1" target="_blank" rel="noopener">compgen</a></td>
+<td>Lists available commands</td>
+</tr>
+<tr>
+<td>Get-Help</td>
+<td>help, man</td>
+<td><a href="https://en.wikipedia.org/wiki/Help_(command)" target="_blank" rel="noopener">help</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Apropos_(Unix)" target="_blank" rel="noopener">apropos</a>, <a href="https://en.wikipedia.org/wiki/Manpage" target="_blank" rel="noopener">man</a></td>
+<td>Prints a command’s documentation on the console</td>
+</tr>
+<tr>
+<td>Clear-Host</td>
+<td>cls, clear</td>
+<td><a href="https://en.wikipedia.org/wiki/Cls_(computing)" target="_blank" rel="noopener">cls</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Clear_(Unix)" target="_blank" rel="noopener">clear</a></td>
+<td>Clears the screen<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-86" target="_blank" rel="noopener">[b]</a></td>
+</tr>
+<tr>
+<td>Copy-Item</td>
+<td>cpi, copy, cp</td>
+<td><a href="https://en.wikipedia.org/wiki/Copy_(command)" target="_blank" rel="noopener">copy</a>, <a href="https://en.wikipedia.org/wiki/Xcopy" target="_blank" rel="noopener">xcopy</a>, <a href="https://en.wikipedia.org/wiki/Robocopy" target="_blank" rel="noopener">robocopy</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Cp_(Unix)" target="_blank" rel="noopener">cp</a></td>
+<td>Copies files and folders to another location</td>
+</tr>
+<tr>
+<td>Move-Item</td>
+<td>mi, move, mv</td>
+<td><a href="https://en.wikipedia.org/wiki/Move_(command)" target="_blank" rel="noopener">move</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Mv" target="_blank" rel="noopener">mv</a></td>
+<td>Moves files and folders to a new location</td>
+</tr>
+<tr>
+<td>Remove-Item</td>
+<td>ri, del, erase, rmdir, rd, rm</td>
+<td><a href="https://en.wikipedia.org/wiki/Del_(command)" target="_blank" rel="noopener">del</a>, <a href="https://en.wikipedia.org/wiki/Del_(command)" target="_blank" rel="noopener">erase</a>, <a href="https://en.wikipedia.org/wiki/Rmdir" target="_blank" rel="noopener">rmdir</a>, <a href="https://en.wikipedia.org/wiki/Rmdir" target="_blank" rel="noopener">rd</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Rm_(Unix)" target="_blank" rel="noopener">rm</a>, rmdir</td>
+<td>Deletes files or folders</td>
+</tr>
+<tr>
+<td>Rename-Item</td>
+<td>rni, ren, mv</td>
+<td><a href="https://en.wikipedia.org/wiki/Ren_(command)" target="_blank" rel="noopener">ren</a>, <a href="https://en.wikipedia.org/wiki/Ren_(command)" target="_blank" rel="noopener">rename</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Mv" target="_blank" rel="noopener">mv</a></td>
+<td>Renames a single file, folder, hard link or symbolic link</td>
+</tr>
+<tr>
+<td>Get-Location</td>
+<td>gl, cd, pwd</td>
+<td><a href="https://en.wikipedia.org/wiki/Cd_(command)" target="_blank" rel="noopener">cd</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Pwd" target="_blank" rel="noopener">pwd</a></td>
+<td>Displays the working path (current folder)</td>
+</tr>
+<tr>
+<td>Pop-Location</td>
+<td>popd</td>
+<td><a href="https://en.wikipedia.org/wiki/Pushd_and_popd" target="_blank" rel="noopener">popd</a></td>
+<td>popd</td>
+<td>Changes the working path to the location most recently pushed onto the stack</td>
+</tr>
+<tr>
+<td>Push-Location</td>
+<td>pushd</td>
+<td><a href="https://en.wikipedia.org/wiki/Pushd_and_popd" target="_blank" rel="noopener">pushd</a></td>
+<td>pushd</td>
+<td>Stores the working path onto the stack</td>
+</tr>
+<tr>
+<td>Set-Location</td>
+<td>sl, cd, chdir</td>
+<td><a href="https://en.wikipedia.org/wiki/Cd_(command)" target="_blank" rel="noopener">cd</a>, <a href="https://en.wikipedia.org/wiki/Cd_(command)" target="_blank" rel="noopener">chdir</a></td>
+<td>cd</td>
+<td>Changes the working path</td>
+</tr>
+<tr>
+<td>Tee-Object</td>
+<td>tee</td>
+<td>N/A</td>
+<td><a href="https://en.wikipedia.org/wiki/Tee_(command)" target="_blank" rel="noopener">tee</a></td>
+<td>Pipes input to a file or variable, passing the input along the pipeline</td>
+</tr>
+<tr>
+<td>Write-Output</td>
+<td>echo, write</td>
+<td><a href="https://en.wikipedia.org/wiki/Echo_(command)" target="_blank" rel="noopener">echo</a></td>
+<td>echo</td>
+<td>Prints strings or other objects to the <a href="https://en.wikipedia.org/wiki/Standard_output" target="_blank" rel="noopener">standard output</a></td>
+</tr>
+<tr>
+<td>Get-Process</td>
+<td>gps, ps</td>
+<td>tlist,<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tlist_kill-87" target="_blank" rel="noopener">[c]</a> tasklist<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tasklist_taskkill-88" target="_blank" rel="noopener">[d]</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Ps_(Unix)" target="_blank" rel="noopener">ps</a></td>
+<td>Lists all running processes</td>
+</tr>
+<tr>
+<td>Stop-Process</td>
+<td>spps, kill</td>
+<td><a href="https://en.wikipedia.org/wiki/Kill_(command)" target="_blank" rel="noopener">kill</a>,<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tlist_kill-87" target="_blank" rel="noopener">[c]</a> taskkill<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-Available_tasklist_taskkill-88" target="_blank" rel="noopener">[d]</a></td>
+<td>kill<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-UNIX_kill_misnomer-89" target="_blank" rel="noopener">[e]</a></td>
+<td>Stops a running process</td>
+</tr>
+<tr>
+<td>Select-String</td>
+<td>sls</td>
+<td><a href="https://en.wikipedia.org/wiki/Findstr_(computing)" target="_blank" rel="noopener">findstr</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Find_(Unix)" target="_blank" rel="noopener">find</a>, <a href="https://en.wikipedia.org/wiki/Grep" target="_blank" rel="noopener">grep</a></td>
+<td>Prints lines matching a pattern</td>
+</tr>
+<tr>
+<td>Set-Variable</td>
+<td>sv, set</td>
+<td><a href="https://en.wikipedia.org/wiki/Environment_variable#DOS" target="_blank" rel="noopener">set</a></td>
+<td>env, export, set, setenv</td>
+<td>Creates or alters the contents of an <a href="https://en.wikipedia.org/wiki/Environment_variable" target="_blank" rel="noopener">environment variable</a></td>
+</tr>
+<tr>
+<td>Invoke-WebRequest</td>
+<td>iwr, <del>curl, wget</del><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-90" target="_blank" rel="noopener">[f]</a></td>
+<td>N/A</td>
+<td><a href="https://en.wikipedia.org/wiki/Wget" target="_blank" rel="noopener">wget</a>, <a href="https://en.wikipedia.org/wiki/CURL#curl" target="_blank" rel="noopener">curl</a></td>
+<td>Gets contents from a web page on the Internet</td>
+</tr>
+</tbody></table>
+<p><strong>注意:</strong></p>
+<ol>
+<li><p>虽然外部<a href="https://en.wikipedia.org/wiki/Ping_(networking_utility)" target="_blank" rel="noopener">ping</a>命令仍然可用于PowerShell，但Test-Connection的输出是一个结构化对象，可以通过程序检查</p>
+</li>
+<li><p>Clear-Host被实现为预定义的PowerShell功能</p>
+</li>
+<li><p>1、2在Windows NT4，Windows 98资源工具包，Windows 2000支持工具中可用.</p>
+</li>
+<li><p>1、2在Windows XP专业版及更高版本中可用</p>
+</li>
+<li><p>还用于在UNIX中发送进程的任何信号，“终止”信号仅仅是默认的</p>
+</li>
+<li><p>curl和wget不在PowerShell Core中，以免干扰调用非Windows操作系统的名称相似的组件。</p>
+</li>
+</ol>
+<h2 id="6-文件扩展名-File-extensions"><a href="#6-文件扩展名-File-extensions" class="headerlink" title="6. 文件扩展名(File extensions)"></a>6. 文件扩展名(File extensions)</h2><ul>
+<li>PS1 - Windows PowerShell外壳脚本[85]</li>
+<li>PSD1 - Windows PowerShell数据文件（用于版本2）</li>
+<li>PSM1 - Windows PowerShell模块文件（用于版本2）</li>
+<li>PS1XML - Windows PowerShell格式和类型定义</li>
+<li>CLIXML - Windows PowerShell序列化数据</li>
+<li>PSC1 - Windows PowerShell控制台文件</li>
+<li>PSSC - Windows PowerShell会话配置文件</li>
+</ul>
+<h2 id="7-应用支持-Application-support"><a href="#7-应用支持-Application-support" class="headerlink" title="7. 应用支持(Application support)"></a>7. 应用支持(Application support)</h2><h3 id="Snap-ins-and-hostsedit"><a href="#Snap-ins-and-hostsedit" class="headerlink" title="Snap-ins and hostsedit"></a>Snap-ins and hosts<a href="https://en.wikipedia.org/w/index.php?title=PowerShell&action=edit&section=18" target="_blank" rel="noopener">edit</a></h3><table>
+<thead>
+<tr>
+<th>Application</th>
+<th>Version</th>
+<th>Cmdlets</th>
+<th>Provider</th>
+<th>Management GUI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://en.wikipedia.org/wiki/Microsoft_Exchange_Server" target="_blank" rel="noopener">Exchange Server</a></td>
+<td>2007</td>
+<td>402</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Microsoft_Windows" target="_blank" rel="noopener">Windows Server</a></td>
+<td><a href="https://en.wikipedia.org/wiki/Windows_Server_2008" target="_blank" rel="noopener">2008</a></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Microsoft_SQL_Server" target="_blank" rel="noopener">Microsoft SQL Server</a></td>
+<td>2008</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/SharePoint" target="_blank" rel="noopener">Microsoft SharePoint</a></td>
+<td>2010</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/System_Center_Configuration_Manager" target="_blank" rel="noopener">System Center Configuration Manager</a></td>
+<td>2012 R2</td>
+<td>400+</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/System_Center_Operations_Manager" target="_blank" rel="noopener">System Center Operations Manager</a></td>
+<td>2007</td>
+<td>74</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/System_Center_Virtual_Machine_Manager" target="_blank" rel="noopener">System Center Virtual Machine Manager</a></td>
+<td>2007</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/System_Center_Data_Protection_Manager" target="_blank" rel="noopener">System Center Data Protection Manager</a></td>
+<td>2007</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Windows_Compute_Cluster_Server" target="_blank" rel="noopener">Windows Compute Cluster Server</a></td>
+<td>2007</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Microsoft Transporter Suite for <a href="https://en.wikipedia.org/wiki/IBM_Lotus_Domino" target="_blank" rel="noopener">Lotus Domino</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-98" target="_blank" rel="noopener">[92]</a></td>
+<td>08.02.0012</td>
+<td>47</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Microsoft PowerTools for <a href="https://en.wikipedia.org/wiki/Office_Open_XML" target="_blank" rel="noopener">Open XML</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-99" target="_blank" rel="noopener">[93]</a></td>
+<td>1.0</td>
+<td>33</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/IBM_WebSphere_MQ" target="_blank" rel="noopener">IBM WebSphere MQ</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-100" target="_blank" rel="noopener">[94]</a></td>
+<td>6.0.2.2</td>
+<td>44</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Quest_Software" target="_blank" rel="noopener">Quest Management Shell for Active Directory</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-101" target="_blank" rel="noopener">[95]</a></td>
+<td>1.7</td>
+<td>95</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Special Operations Software Specops Command<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-102" target="_blank" rel="noopener">[96]</a></td>
+<td>1.0</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/VMware_vSphere" target="_blank" rel="noopener">VMware vSphere</a> PowerCLI<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-103" target="_blank" rel="noopener">[97]</a></td>
+<td>6.5 R1</td>
+<td>500+</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Internet_Information_Services" target="_blank" rel="noopener">Internet Information Services</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-104" target="_blank" rel="noopener">[98]</a></td>
+<td>7.0</td>
+<td>54</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Windows_7" target="_blank" rel="noopener">Windows 7</a> Troubleshooting Center<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-105" target="_blank" rel="noopener">[99]</a></td>
+<td>6.1</td>
+<td>Yes</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Microsoft_Deployment_Toolkit" target="_blank" rel="noopener">Microsoft Deployment Toolkit</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-106" target="_blank" rel="noopener">[100]</a></td>
+<td>2010</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/NetApp" target="_blank" rel="noopener">NetApp</a> PowerShell Toolkit<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-107" target="_blank" rel="noopener">[101]</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-108" target="_blank" rel="noopener">[102]</a></td>
+<td>4.2</td>
+<td>2000+</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/JAMS_Scheduler" target="_blank" rel="noopener">JAMS Scheduler</a> – Job Access &amp; Management System<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-109" target="_blank" rel="noopener">[103]</a></td>
+<td>5.0</td>
+<td>52</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/w/index.php?title=UIAutomation&action=edit&redlink=1" target="_blank" rel="noopener">UIAutomation</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-110" target="_blank" rel="noopener">[104]</a></td>
+<td>0.8</td>
+<td>432</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Dell" target="_blank" rel="noopener">Dell</a> Equallogic<a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-111" target="_blank" rel="noopener">[105]</a></td>
+<td>3.5</td>
+<td>55</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/w/index.php?title=LOGINventory&action=edit&redlink=1" target="_blank" rel="noopener">LOGINventory</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-112" target="_blank" rel="noopener">[106]</a></td>
+<td>5.8</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/w/index.php?title=SePSX&action=edit&redlink=1" target="_blank" rel="noopener">SePSX</a><a href="https://en.wikipedia.org/wiki/PowerShell#cite_note-113" target="_blank" rel="noopener">[107]</a></td>
+<td>0.4.1</td>
+<td>39</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<h2 id="8-替代实现-Alternative-implementation"><a href="#8-替代实现-Alternative-implementation" class="headerlink" title="8. 替代实现(Alternative implementation)"></a>8. 替代实现(Alternative implementation)</h2><p>一个名为Pash的项目（这个名字是着名的“bash”Unix shell 上的一个双关语）是通过Mono框架开放源码和跨平台重新实现PowerShell的。 Pash由Igor Moochnick创建，用C＃编写，并在GNU通用公共许可证下发布。 Pash开发在2008年停滞，但在2012年重新开始。</p>
+<h2 id="9-扩展阅读-See-also"><a href="#9-扩展阅读-See-also" class="headerlink" title="9. 扩展阅读(See also)"></a>9. 扩展阅读(See also)</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Common_Information_Model_(computing)" target="_blank" rel="noopener">Common Information Model</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Comparison_of_command_shells" target="_blank" rel="noopener">Comparison of command shells</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages" target="_blank" rel="noopener">Comparison of programming languages</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Web-Based_Enterprise_Management" target="_blank" rel="noopener">Web-Based Enterprise Management</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Windows_Script_Host" target="_blank" rel="noopener">Windows Script Host</a></li>
+</ul>
+<hr>
+<p>终于将PowerShell维基百科的英文搬运过来了(可以的话还是推荐看原文),虽然99%翻译都是靠谷歌,但是自己这么一遍下来,已经有了更加深入的了解,也认识到自己还有很多的不足,新的一年,加油吧.</p>
+</div><div class="post-copyright"><div class="post-copyright-author"><span class="post-copyright-meta">本文作者: </span><span class="post-copyright-info"><a href="mailto:undefined">超速蜗牛</a></span></div><div class="post-copyright-type"><span class="post-copyright-meta">本文链接: </span><span class="post-copyright-info"><a href="https://chaoyuew.gitee.io/WhatIsPowerShell.html">https://chaoyuew.gitee.io/WhatIsPowerShell.html</a></span></div><div class="post-copyright-notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://chaoyuew.gitee.io">超速蜗牛的博客</a>！</span></div></div></article><div id="pagination"><div class="prev-post pull-left"><span class="line line-top"></span><span class="line line-right"></span><span class="line line-bottom"></span><span class="line line-left"></span><a href="/WPS-1-Basic-Introduction.html"><i class="fas fa-angle-left">&nbsp;</i><span>Windows PowerShell入门(1)-简介</span></a></div></div><!--div!= paginator()--></div></div><div class="button-hover" id="return-top"><i class="fas fa-arrow-up" aria-hidden="true"></i></div><footer><div id="footer"><div class="button-hover" id="side-button"><i class="fas fa-arrow-right"></i></div><div class="right-content"><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fas fa-file-o"></i></span><span id="busuanzi_value_page_pv"></span><span></span></div><div class="copyright">&copy;2019 By 超速蜗牛</div></div></div></footer></div><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery-3.3.1.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/velocity.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/thirdparty/jquery.mCustomScrollbar.concat.min.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/fan.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/canvas_bg.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/utils.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/scroll.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/sidebar.js"></script><!--script(src=url)--><!--js(src=url_for(url) + '?version=' + version())--><script src="/js/copy.js"></script><!--script(src=url)--><div class="search-dialog"><div id="algolia-search-title">Algolia</div><div class="search-close-button"><i class="fa fa-times"></i></div><!--div#current-refined-values--><!--div#clear-all--><div id="search-box"></div><!--div#refinement-list--><hr><div id="hits"></div><div id="algolia-pagination"></div></div><div class="search-mask"></div><script src="/js/search/algolia.js"></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
