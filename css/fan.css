@@ -236,6 +236,15 @@ body .button-hover:hover::before {
   #post figure.highlight.bash table::before {
     content: "bash";
   }
+  #post figure.highlight.powershell table::before {
+    content: "powershell";
+  }
+  #post figure.highlight.c\# table::before {
+    content: "c\#";
+  }
+  #post figure.highlight.vba table::before {
+    content: "vba";
+  }
   #post pre,
   .post-content pre,
   #post .highlight,
@@ -2246,6 +2255,15 @@ body .button-hover:hover::before {
   }
   #post figure.highlight.bash table::before {
     content: "bash";
+  }
+  #post figure.highlight.powershell table::before {
+    content: "powershell";
+  }
+  #post figure.highlight.c\# table::before {
+    content: "c\#";
+  }
+  #post figure.highlight.vba table::before {
+    content: "vba";
   }
   #post pre,
   .post-content pre,
@@ -4266,6 +4284,9 @@ body .button-hover:hover::before {
   }
   #post figure.highlight.c\# table::before {
     content: "c\#";
+  }
+  #post figure.highlight.vba table::before {
+    content: "vba";
   }
   #post pre,
   .post-content pre,

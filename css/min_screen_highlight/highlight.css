@@ -76,6 +76,9 @@
 #post figure.highlight.c\# table::before {
   content: "c\#";
 }
+#post figure.highlight.vba table::before {
+  content: "vba";
+}
 #post pre,
 .post-content pre,
 #post .highlight,
